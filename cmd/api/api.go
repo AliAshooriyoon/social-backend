@@ -4,12 +4,15 @@ import (
 	"net/http"
 	"time"
 
+	"project/internal/store"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
 
 type application struct {
 	config config
+	store  store.Store
 }
 
 type config struct {
@@ -22,6 +25,7 @@ func (app *application) mount() *chi.Mux {
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hi"))
 	})
+	router.Get("/posts", app.getPostsHandler)
 	return router
 }
 

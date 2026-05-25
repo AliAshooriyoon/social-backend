@@ -1,13 +1,18 @@
 package main
 
 import (
+	"os"
+
 	"project/internal/db"
 	"project/internal/store"
+
+	"github.com/subosito/gotenv"
 )
 
 func main() {
-	// get env!
-	db, err := db.New("")
+	gotenv.Load()
+	dbAddr := os.Getenv("DATABASE")
+	db, err := db.New(dbAddr)
 	if err != nil {
 		return
 	}

@@ -28,8 +28,10 @@ func (app *application) mount() *chi.Mux {
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hi"))
 	})
-	router.Get("/posts", app.getPostsHandler)
-	router.Post("/new-post", app.createPostHandler)
+	router.Route("/posts", func(r chi.Router) {
+		r.Get("/", app.getPostsHandler)
+		r.Post("/new-post", app.createPostHandler)
+	})
 	return router
 }
 

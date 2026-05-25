@@ -3,6 +3,6 @@ package store
 
 type Store struct {
 	Posts interface {
-		GetAll() error
+		GetAll(int) error
 	}
 }

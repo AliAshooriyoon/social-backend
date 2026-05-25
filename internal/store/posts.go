@@ -1,5 +1,7 @@
 package store
 
+import "github.com/jackc/pgx/v5/pgxpool"
+
 type Post struct {
 	Title       string
 	Description string
@@ -7,8 +9,10 @@ type Post struct {
 	ID          int
 }
 
-type PostsStore struct{}
+type PostsStore struct {
+	Pool *pgxpool.Pool
+}
 
-func (p *PostsStore) GetAll() error {
+func (p *PostsStore) GetAll(count int) error {
 	return nil
 }

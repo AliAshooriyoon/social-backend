@@ -11,17 +11,25 @@ import (
 func New(addr string) (*pgxpool.Pool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	pool, err := pgxpool.New(ctx, addr)
+
+	config, err := pgxpool.ParseConfig(addr)
 	if err != nil {
 		return nil, err
 	}
-	pool.Begin(ctx)
-	defer pool.Close()
+
+	config.MaxConns = 30
+	config.MaxConnIdleTime = 30 * time.Second
+
+	pool, err := pgxpool.NewWithConfig(ctx, config)
+	if err != nil {
+		return nil, err
+	}
+
 	err = pool.Ping(ctx)
 	if err != nil {
+		pool.Close()
 		return nil, err
 	}
-	pool.Config().MaxConns = 30
-	pool.Config().MaxConnIdleTime = 30
+
 	return pool, nil
 }

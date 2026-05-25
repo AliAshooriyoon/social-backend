@@ -8,15 +8,18 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"go.uber.org/zap"
 )
 
 type application struct {
 	config config
 	store  store.Store
+	logger *zap.SugaredLogger
 }
 
 type config struct {
 	addr string
+	env  string
 }
 
 func (app *application) mount() *chi.Mux {
@@ -26,16 +29,19 @@ func (app *application) mount() *chi.Mux {
 		w.Write([]byte("hi"))
 	})
 	router.Get("/posts", app.getPostsHandler)
+	router.Post("/new-post", app.createPostHandler)
 	return router
 }
 
 func (app *application) run() error {
+	mn := app.mount()
 	srv := &http.Server{
 		Addr:         app.config.addr,
-		Handler:      app.mount(),
+		Handler:      mn,
 		WriteTimeout: time.Second * 10,
 		ReadTimeout:  time.Second * 10,
 		IdleTimeout:  time.Minute,
 	}
+	app.logger.Infow("Server started on ", "addr", srv.Addr, "env", app.config.env)
 	return srv.ListenAndServe()
 }

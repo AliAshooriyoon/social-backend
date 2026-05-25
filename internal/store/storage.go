@@ -1,8 +1,11 @@
 // Package store: storage of project
 package store
 
+import "context"
+
 type Store struct {
 	Posts interface {
-		GetAll(int) error
+		GetLasts(context.Context, int) (*[]Post, error)
+		Create(context.Context, string, string, int) error
 	}
 }

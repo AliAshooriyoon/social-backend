@@ -32,6 +32,7 @@ func (app *application) mount() *chi.Mux {
 		r.Get("/", app.getPostsHandler)
 		r.Post("/new-post", app.createPostHandler)
 		r.Put("/update-post", app.updatePostHandler)
+		r.Delete("/remove-post", app.deletePostHandler)
 	})
 	return router
 }

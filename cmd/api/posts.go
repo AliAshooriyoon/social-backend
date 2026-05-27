@@ -66,3 +66,21 @@ func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request
 	}
 	w.WriteHeader(http.StatusCreated)
 }
+
+type postDeletePayload struct {
+	ID int `json:"id"`
+}
+
+func (app *application) deletePostHandler(w http.ResponseWriter, r *http.Request) {
+	var postID postDeletePayload
+	if err := readJSON(w, r, &postID); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+	err := app.store.Posts.Delete(r.Context(), postID.ID)
+	if err != nil {
+		app.internalServerError(w, r, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, nil)
+}

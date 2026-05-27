@@ -47,3 +47,16 @@ func (p *PostsStore) Create(ctx context.Context, title, description string, user
 	}
 	return nil
 }
+
+func (p *PostsStore) Update(ctx context.Context, tilte, description string, id int) error {
+	query := `UPDATE posts
+	SET title = $1, description = $2
+	WHERE id = $3
+	RETURNING id;`
+	var updatedID int
+	err := p.Pool.QueryRow(ctx, query, tilte, description, id).Scan(&updatedID)
+	if err != nil {
+		return err
+	}
+	return nil
+}

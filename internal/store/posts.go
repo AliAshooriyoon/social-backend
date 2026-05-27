@@ -60,3 +60,12 @@ func (p *PostsStore) Update(ctx context.Context, tilte, description string, id i
 	}
 	return nil
 }
+
+func (p *PostsStore) Delete(ctx context.Context, id int) error {
+	query := `DELETE FROM posts WHERE id = $1;`
+	_, err := p.Pool.Exec(ctx, query, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

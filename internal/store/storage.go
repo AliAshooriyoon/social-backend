@@ -8,5 +8,6 @@ type Store struct {
 		GetLasts(context.Context, int) (*[]Post, error)
 		Create(context.Context, string, string, int) error
 		Update(context.Context, string, string, int) error
+		Delete(ctx context.Context, id int) error
 	}
 }

@@ -32,6 +32,9 @@ func main() {
 			Posts: &store.PostsStore{
 				Pool: db,
 			},
+			Users: &store.UsersStore{
+				Pool: db,
+			},
 		},
 		logger: logger,
 	}

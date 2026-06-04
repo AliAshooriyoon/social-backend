@@ -52,3 +52,17 @@ VALUES (
 	}
 	return nil
 }
+
+func (u *UsersStore) Update(ctx context.Context, username, email, password string) error {
+	query := `UPDATE users
+SET
+    email = $1,
+    userName = $2,
+    password = $3
+		WHERE id = $4;`
+	_, err := u.Pool.Exec(ctx, query, username, email, password)
+	if err != nil {
+		return err
+	}
+	return nil
+}

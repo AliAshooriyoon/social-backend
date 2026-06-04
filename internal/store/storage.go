@@ -13,5 +13,6 @@ type Store struct {
 	Users interface {
 		GetByID(context.Context, int) (*User, error)
 		Create(ctx context.Context, username, email, password string) error
+		Update(ctx context.Context, username, email, password string) error
 	}
 }

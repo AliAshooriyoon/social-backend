@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
@@ -32,4 +33,22 @@ func (u *UsersStore) GetByID(ctx context.Context, id int) (*User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (u *UsersStore) Create(ctx context.Context, username, email, password string) error {
+	query := `INSERT INTO users (email, userName, password)
+VALUES (
+    $1,
+    $2,
+    $3
+);`
+	hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	_, err = u.Pool.Exec(ctx, query, username, email, hashed)
+	if err != nil {
+		return err
+	}
+	return nil
 }

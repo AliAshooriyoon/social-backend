@@ -36,5 +36,14 @@ func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request
 		app.badRequestError(w, r, err)
 		return
 	}
+	err := app.store.Users.Create(r.Context(), payload.UserName, payload.Email, payload.Password)
+	if err != nil {
+		app.internalServerError(w, r, err)
+		return
+	}
+	if err := writeJSON(w, http.StatusCreated, nil); err != nil {
+		app.internalServerError(w, r, err)
+		return
+	}
 }
 func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request) {}

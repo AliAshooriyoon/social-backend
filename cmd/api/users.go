@@ -46,4 +46,26 @@ func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 }
-func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request) {}
+
+type updateUserPayload struct {
+	UserName string `json:"user_name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request) {
+	var payload updateUserPayload
+	if err := readJSON(w, r, &payload); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+	err := app.store.Users.Update(r.Context(), payload.UserName, payload.Email, payload.Password)
+	if err != nil {
+		app.internalServerError(w, r, err)
+		return
+	}
+	if err := writeJSON(w, http.StatusCreated, nil); err != nil {
+		app.internalServerError(w, r, err)
+		return
+	}
+}

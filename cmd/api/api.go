@@ -35,9 +35,9 @@ func (app *application) mount() *chi.Mux {
 		r.Delete("/remove-post", app.deletePostHandler)
 	})
 	router.Route("/user", func(r chi.Router) {
+		r.Post("/", app.createUserHandler)
 		r.Route("/{user_id}", func(r chi.Router) {
 			r.Get("/", app.getUserHandler)
-			r.Post("/", app.createUserHandler)
 		})
 	})
 	return router

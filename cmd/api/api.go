@@ -37,6 +37,7 @@ func (app *application) mount() *chi.Mux {
 	router.Route("/user", func(r chi.Router) {
 		r.Route("/{user_id}", func(r chi.Router) {
 			r.Get("/", app.getUserHandler)
+			r.Post("/", app.createUserHandler)
 		})
 	})
 	return router

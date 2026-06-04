@@ -23,3 +23,18 @@ func (app *application) getUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+type createUserPayload struct {
+	UserName string `json:"user_name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request) {
+	var payload createUserPayload
+	if err := readJSON(w, r, &payload); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+}
+func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request) {}

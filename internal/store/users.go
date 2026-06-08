@@ -53,16 +53,27 @@ VALUES (
 	return nil
 }
 
-func (u *UsersStore) Update(ctx context.Context, username, email, password string) error {
+func (u *UsersStore) Update(ctx context.Context, username, email, password string, userID int) error {
 	query := `UPDATE users
 SET
     email = $1,
     userName = $2,
     password = $3
 		WHERE id = $4;`
-	_, err := u.Pool.Exec(ctx, query, username, email, password)
+	_, err := u.Pool.Exec(ctx, query, username, email, password, userID)
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func (u *UsersStore) Delete(ctx context.Context, userID int) error {
+	query := `DELETE FROM users
+		WHERE id = $1;`
+	_, err := u.Pool.Exec(ctx, query, userID)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

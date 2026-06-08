@@ -54,18 +54,35 @@ type updateUserPayload struct {
 }
 
 func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request) {
+	userID, err := strconv.Atoi(chi.URLParam(r, "user_id"))
+	if err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
 	var payload updateUserPayload
 	if err := readJSON(w, r, &payload); err != nil {
 		app.badRequestError(w, r, err)
 		return
 	}
-	err := app.store.Users.Update(r.Context(), payload.UserName, payload.Email, payload.Password)
+	err = app.store.Users.Update(r.Context(), payload.UserName, payload.Email, payload.Password, userID)
 	if err != nil {
 		app.internalServerError(w, r, err)
 		return
 	}
 	if err := writeJSON(w, http.StatusCreated, nil); err != nil {
 		app.internalServerError(w, r, err)
+		return
+	}
+}
+
+func (app *application) deleteUserHandler(w http.ResponseWriter, r *http.Request) {
+	userID, err := strconv.Atoi(chi.URLParam(r, "user_id"))
+	if err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+	err = app.store.Users.Delete(r.Context(), userID)
+	if err != nil {
 		return
 	}
 }

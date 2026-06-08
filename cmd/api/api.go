@@ -39,6 +39,7 @@ func (app *application) mount() *chi.Mux {
 		r.Route("/{user_id}", func(r chi.Router) {
 			r.Get("/", app.getUserHandler)
 			r.Put("/", app.updateUserHandler)
+			r.Delete("/", app.deleteUserHandler)
 		})
 	})
 	return router

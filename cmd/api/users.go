@@ -85,4 +85,8 @@ func (app *application) deleteUserHandler(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		return
 	}
+	if err := writeJSON(w, http.StatusOK, nil); err != nil {
+		app.internalServerError(w, r, err)
+		return
+	}
 }

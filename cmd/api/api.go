@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -8,6 +9,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"go.uber.org/zap"
 )
 
@@ -28,6 +30,8 @@ func (app *application) mount() *chi.Mux {
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hi"))
 	})
+	docsURL := fmt.Sprintf("localhost%s/swagger/doc.json", app.config.addr)
+	router.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL(docsURL)))
 	router.Route("/posts", func(r chi.Router) {
 		r.Get("/", app.getPostsHandler)
 		r.Post("/new-post", app.createPostHandler)

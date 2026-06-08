@@ -81,7 +81,11 @@ func (app *application) deleteUserHandler(w http.ResponseWriter, r *http.Request
 		app.badRequestError(w, r, err)
 		return
 	}
-	err = app.store.Users.Delete(r.Context(), userID)
+	user, err := app.store.Users.GetByID(r.Context(), userID)
+	if err != nil {
+		return
+	}
+	err = app.store.Users.Delete(r.Context(), user.Email)
 	if err != nil {
 		return
 	}

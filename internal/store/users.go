@@ -67,10 +67,10 @@ SET
 	return nil
 }
 
-func (u *UsersStore) Delete(ctx context.Context, userID int) error {
+func (u *UsersStore) Delete(ctx context.Context, email string) error {
 	query := `DELETE FROM users
-		WHERE id = $1;`
-	_, err := u.Pool.Exec(ctx, query, userID)
+		WHERE email = $1;`
+	_, err := u.Pool.Exec(ctx, query, email)
 	if err != nil {
 		return err
 	}

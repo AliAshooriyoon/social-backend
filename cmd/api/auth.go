@@ -34,4 +34,22 @@ func (app *application) generateToken(w http.ResponseWriter, r *http.Request) {
 		},
 		UserID: user.ID,
 	}
+	token, err := app.config.auth.GenerateToken(claim)
+	if err != nil {
+		app.internalServerError(w, r, err)
+		return
+	}
+	http.SetCookie(w, &http.Cookie{
+		Name:     "refreshToken",
+		Value:    token,
+		Expires:  time.Now().Add(time.Hour * 24),
+		MaxAge:   60 * 60 * 24,
+		Secure:   false,
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+	})
+	if err := writeJSON(w, http.StatusOK, token); err != nil {
+		app.internalServerError(w, r, err)
+		return
+	}
 }

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"project/internal/auth"
 	"project/internal/store"
 
 	"github.com/go-chi/chi/v5"
@@ -22,6 +23,7 @@ type application struct {
 type config struct {
 	addr string
 	env  string
+	auth auth.Authenticator
 }
 
 func (app *application) mount() *chi.Mux {

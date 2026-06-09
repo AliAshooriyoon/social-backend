@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"project/internal/auth"
 	"project/internal/db"
 	"project/internal/store"
 
@@ -36,8 +37,11 @@ func main() {
 		logger.Fatal(err)
 		return
 	}
+	secretToken := os.Getenv("SECRET_TOKEN")
+	authenticator := auth.NewAuth(secretToken, "aliash")
 	cfg := config{
 		addr: ":8080",
+		auth: authenticator,
 	}
 
 	app := application{

@@ -11,7 +11,7 @@ type loginUserPayload struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
-type claimType struct {
+type ClaimType struct {
 	jwt.RegisteredClaims
 	UserID int `json:"user_id"`
 }
@@ -26,7 +26,7 @@ func (app *application) GenerateToken(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	claim := claimType{
+	claim := ClaimType{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

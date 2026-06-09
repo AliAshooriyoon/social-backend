@@ -1,6 +1,10 @@
 package auth
 
-import "github.com/golang-jwt/jwt/v5"
+import (
+	"errors"
+
+	"github.com/golang-jwt/jwt/v5"
+)
 
 type JWTAuth struct {
 	secret string
@@ -18,4 +22,20 @@ func (j *JWTAuth) GenerateToken(claim jwt.Claims) (string, error) {
 		return "", err
 	}
 	return tokenStr, nil
+}
+
+func (j *JWTAuth) ValidateToken(tokenStr string) (*jwt.Token, error) {
+	token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (any, error) {
+		if t.Method.Alg() != jwt.SigningMethodHS256.Alg() {
+			return nil, errors.New("invalid alg")
+		}
+		return []byte(j.secret), nil
+	}, jwt.WithExpirationRequired())
+	if err != nil {
+		return nil, err
+	}
+	if !token.Valid {
+		return nil, errors.New("invalid token")
+	}
+	return token, nil
 }

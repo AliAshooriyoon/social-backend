@@ -7,4 +7,5 @@ func GenerateToken() {}
 
 type Authenticator interface {
 	GenerateToken(claim jwt.Claims) (string, error)
+	ValidateToken(string) (*jwt.Token, error)
 }

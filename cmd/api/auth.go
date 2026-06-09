@@ -16,7 +16,7 @@ type claimType struct {
 	UserID int `json:"user_id"`
 }
 
-func (app *application) generateToken(w http.ResponseWriter, r *http.Request) {
+func (app *application) GenerateToken(w http.ResponseWriter, r *http.Request) {
 	var payload loginUserPayload
 	if err := readJSON(w, r, &payload); err != nil {
 		app.internalServerError(w, r, err)

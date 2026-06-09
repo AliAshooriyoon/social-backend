@@ -77,3 +77,17 @@ func (u *UsersStore) Delete(ctx context.Context, email string) error {
 
 	return nil
 }
+
+func (u *UsersStore) GetByEmail(ctx context.Context, email string) (*User, error) {
+	query := `
+					SELECT id, user_name, password, created_at 
+					FROM users 
+					WHERE email = $1;
+`
+	var user User
+	err := u.Pool.QueryRow(ctx, query, email).Scan(&user.ID, &user.UserName, &user.Password, user.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}

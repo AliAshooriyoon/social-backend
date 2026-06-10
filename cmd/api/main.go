@@ -11,6 +11,10 @@ import (
 	"go.uber.org/zap"
 )
 
+type keyContextType string
+
+var userContextKey keyContextType = "user_auth"
+
 //	@title			Swagger Example API
 //	@version		1.0
 //	@description	This is a sample server Petstore server.

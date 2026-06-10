@@ -2,12 +2,11 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+
+	"project/internal/store"
 )
-
-type keyContextType string
-
-var contextKey keyContextType = "user_auth"
 
 func (app *application) AuthTokenMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -29,7 +28,21 @@ func (app *application) AuthTokenMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), contextKey, user)
+		ctx := context.WithValue(r.Context(), userContextKey, user)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
+}
+
+func (app *application) checkPostOwnership(requiredRole string, next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		app.getUserFromCTX(r)
+	}
+}
+
+func (app application) getUserFromCTX(r *http.Request) (*store.User, error) {
+	user, ok := r.Context().Value(userContextKey).(*store.User)
+	if !ok {
+		return nil, fmt.Errorf("invalid type of user")
+	}
+	return user, nil
 }

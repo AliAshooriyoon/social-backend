@@ -35,6 +35,10 @@ func (app *application) mount() *chi.Mux {
 	docsURL := fmt.Sprintf("localhost%s/swagger/doc.json", app.config.addr)
 	router.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL(docsURL)))
 	router.Route("/posts", func(r chi.Router) {
+		r.Route("/{post_id}", func(r chi.Router) {
+			r.Use(app.postContextMiddleware)
+			r.Get("/", nil)
+		})
 		r.Get("/", app.getPostsHandler)
 		r.Use(app.AuthTokenMiddleware)
 		r.Post("/new-post", app.createPostHandler)

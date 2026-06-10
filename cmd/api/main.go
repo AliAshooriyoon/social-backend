@@ -13,7 +13,10 @@ import (
 
 type keyContextType string
 
-var userContextKey keyContextType = "user_auth"
+var (
+	userContextKey keyContextType = "user_auth"
+	postContextKey keyContextType = "post"
+)
 
 //	@title			Swagger Example API
 //	@version		1.0

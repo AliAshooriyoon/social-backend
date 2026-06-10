@@ -36,6 +36,7 @@ func (app *application) mount() *chi.Mux {
 	router.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL(docsURL)))
 	router.Route("/posts", func(r chi.Router) {
 		r.Get("/", app.getPostsHandler)
+		r.Use(app.AuthTokenMiddleware)
 		r.Post("/new-post", app.createPostHandler)
 		r.Put("/update-post", app.updatePostHandler)
 		r.Delete("/remove-post", app.deletePostHandler)
@@ -47,6 +48,9 @@ func (app *application) mount() *chi.Mux {
 			r.Put("/", app.updateUserHandler)
 			r.Delete("/", app.deleteUserHandler)
 		})
+	})
+	router.Route("/authentication", func(r chi.Router) {
+		r.Post("/token", app.GenerateToken)
 	})
 	return router
 }

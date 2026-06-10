@@ -46,3 +46,11 @@ func (app application) getUserFromCTX(r *http.Request) (*store.User, error) {
 	}
 	return user, nil
 }
+
+func (app application) getPostFromCTX(r *http.Request) (*store.User, error) {
+	user, ok := r.Context().Value(userContextKey).(*store.User)
+	if !ok {
+		return nil, fmt.Errorf("invalid type of post")
+	}
+	return user, nil
+}

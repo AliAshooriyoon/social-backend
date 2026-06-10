@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"strconv"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -83,4 +85,22 @@ func (app *application) deletePostHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 	writeJSON(w, http.StatusOK, nil)
+}
+
+func (app *application) postContextMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		paramStr := chi.URLParam(r, "post_id")
+		param, err := strconv.Atoi(paramStr)
+		if err != nil {
+			app.badRequestError(w, r, err)
+			return
+		}
+		post, err := app.store.Posts.GetByID(r.Context(), param)
+		if err != nil {
+			app.internalServerError(w, r, err)
+			return
+		}
+		ctx := context.WithValue(r.Context(), postContextKey, post)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
 }

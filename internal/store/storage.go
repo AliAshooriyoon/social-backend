@@ -9,6 +9,7 @@ type Store struct {
 		Create(context.Context, string, string, int) error
 		Update(context.Context, string, string, int) error
 		Delete(ctx context.Context, id int) error
+		GetByID(ctx context.Context, id int) (*Post, error)
 	}
 	Users interface {
 		GetByID(context.Context, int) (*User, error)

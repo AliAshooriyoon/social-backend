@@ -72,6 +72,10 @@ func (p *PostsStore) Delete(ctx context.Context, id int) error {
 
 func (p *PostsStore) GetByID(ctx context.Context, id int) (*Post, error) {
 	query := `SELECT title,description,user_id FROM posts WHERE id = $1`
-	p.Pool.Exec(ctx, query, id)
-	return nil, nil
+	var post Post
+	err := p.Pool.QueryRow(ctx, query, id).Scan(&post.Title, &post.Description, &post.UserID)
+	if err != nil {
+		return nil, err
+	}
+	return &post, nil
 }

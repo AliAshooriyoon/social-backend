@@ -42,7 +42,7 @@ func (app *application) mount() *chi.Mux {
 		r.Get("/", app.getPostsHandler)
 		r.Use(app.AuthTokenMiddleware)
 		r.Post("/new-post", app.createPostHandler)
-		r.Put("/update-post", app.updatePostHandler)
+		r.Put("/update-post", app.checkPostOwnership("admin", app.updatePostHandler))
 		r.Delete("/remove-post", app.deletePostHandler)
 	})
 	router.Route("/user", func(r chi.Router) {

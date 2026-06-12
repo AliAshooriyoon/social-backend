@@ -23,12 +23,12 @@ type UsersStore struct {
 
 func (u *UsersStore) GetByID(ctx context.Context, id int) (*User, error) {
 	query := `
-					SELECT email, user_name, password, created_at 
+					SELECT email, user_name, password, role,created_at 
 					FROM users 
 					WHERE id = $1;
 `
 	var user User
-	err := u.Pool.QueryRow(ctx, query, id).Scan(&user.Email, &user.UserName, &user.Password, user.CreatedAt)
+	err := u.Pool.QueryRow(ctx, query, id).Scan(&user.Email, &user.UserName, &user.Password, &user.Role, user.CreatedAt)
 	if err != nil {
 		return nil, err
 	}

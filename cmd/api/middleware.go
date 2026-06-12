@@ -35,7 +35,22 @@ func (app *application) AuthTokenMiddleware(next http.Handler) http.Handler {
 
 func (app *application) checkPostOwnership(requiredRole string, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		app.getUserFromCTX(r)
+		user, err := app.getUserFromCTX(r)
+		if err != nil {
+			app.unauthorizedError(w, r, err)
+			return
+		}
+		post, err := app.getPostFromCTX(r)
+		if err != nil {
+			app.internalServerError(w, r, err)
+			return
+		}
+		if post.UserID == user.ID {
+			next.ServeHTTP(w, r)
+		}
+		if user.Role > 2 {
+			next.ServeHTTP(w, r)
+		}
 	}
 }
 
@@ -47,8 +62,8 @@ func (app application) getUserFromCTX(r *http.Request) (*store.User, error) {
 	return user, nil
 }
 
-func (app application) getPostFromCTX(r *http.Request) (*store.User, error) {
-	user, ok := r.Context().Value(userContextKey).(*store.User)
+func (app application) getPostFromCTX(r *http.Request) (*store.Post, error) {
+	user, ok := r.Context().Value(userContextKey).(*store.Post)
 	if !ok {
 		return nil, fmt.Errorf("invalid type of post")
 	}

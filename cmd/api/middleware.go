@@ -48,7 +48,9 @@ func (app *application) checkPostOwnership(requiredRole string, next http.Handle
 		if post.UserID == user.ID {
 			next.ServeHTTP(w, r)
 		}
-		if user.Role > 2 {
+		if requiredRole == "admin" && user.Role == 3 {
+			next.ServeHTTP(w, r)
+		} else if requiredRole == "moderator" && user.Role >= 2 {
 			next.ServeHTTP(w, r)
 		}
 	}
